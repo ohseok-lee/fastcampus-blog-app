@@ -9,10 +9,14 @@ import SignupPage from "../pages/signup";
 import PostsPage from "../pages/home/posts";
 import { useState } from "react";
 
+//study ts type 부여방법 스터디
+interface RouterProps {
+    isAuth: boolean;
+}
 
-export default function Router() {
-    const [isAuth, setIsAuth] = useState<boolean>(false);
-    return(
+export default function Router({ isAuth }: RouterProps) {
+
+    return (
         <>
             <Routes>
                 {isAuth ? (
@@ -23,9 +27,7 @@ export default function Router() {
                         <Route path='/posts/:id' element={<PostDetail />}></Route>
                         <Route path='/posts/edit/:id' element={<PostEdit />}></Route>
                         <Route path='/profiles' element={<ProfilePage />}></Route>
-                        <Route path='/login' element={<LoginPage />}></Route>
-                        <Route path='/signup' element={<SignupPage />}></Route>
-                        <Route path='*' element={<Navigate replace to='/'/>}></Route>
+                        <Route path='*' element={<Navigate replace to='/' />}></Route>
                     </>
                 ) : (
                     <>
