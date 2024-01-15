@@ -1,14 +1,44 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { collection, getDocs } from "firebase/firestore"
+import { db } from "firebaseApp";
+import AuthContext from "context/AuthContext";
 
 interface PostListPage{
   hasNavigation?: boolean;
+}
+
+//study typescript 선택컬럼 지정
+export interface PostProps{
+  id?: string;
+  title: string;
+  email: string;
+  summary: string;
+  content: string;
+  createdAt: string;
 }
 
 type TabType = "all" | "my";
 
 export default function PostList({hasNavigation = true}){
   const [activeTab, setActiveTab] = useState<TabType>("all");
+  const [posts, setPosts] = useState<PostProps[]>([]);
+  const { user } = useContext(AuthContext);
+
+  const getPosts = async () => {
+    const postData = await getDocs(collection(db, "posts"));
+    postData?.forEach((doc) => {
+      const postDataObj = { ...doc.data(), id: doc.id};
+      setPosts((prev) => [...prev, postDataObj as PostProps]);
+    })
+  }
+
+  //study useEffect
+  //React에서 Component가 렌더링될 때마다 특정 함수를 실행하도록 하는 hook
+  useEffect(() => {
+    getPosts();
+  }, []);
+
   return(
     <>
       {hasNavigation && (
@@ -28,25 +58,29 @@ export default function PostList({hasNavigation = true}){
         </div>
       )}
       <div className="post__list">
-            {[...Array(10)].map((e, index) => (
-              <div key={index} className="post__box"> 
-                <Link to={`/posts/${index}`}>
+            {posts?.length > 0 ? posts?.map((post, index) => (
+              <div key={post?.id} className="post__box"> 
+                <Link to={`/posts/${post?.id}`}>
                   <div className="post__profile-box">
                     <div className="post__profile" />
-                    <div className="post__author-name">패스트캠퍼스</div>
-                    <div className="post__date">2023.12.29 금요일</div>
+                    <div className="post__author-name">{post?.email}</div>
+                    <div className="post__date">{post?.createdAt}</div>
                   </div>
-                  <div className="post__title">게시글 {index}</div>
-                  <div className="post__text">
-                    국비지원/기업 강의는 별도로 안내된 학습 사이트를 이용해 주세요. 쉐어엑스 강의는 해당 홈페이지를 이용해 주세요. 온라인 강의는 오픈일 오후 5시 이후 수강이 가능하며, 당사 사정에 따라 오픈 시간이 조금 늦어질 수 있습니다.
-                  </div>
+                  <div className="post__title">{post?.title}</div>
+                  <div className="post__text">{post?.summary}</div>
+                </Link>
+                {post?.email === user?.email && (
                   <div className="post__utils-box">
                     <div className="post__delete">삭제</div>
-                    <div className="post__edit">수정</div>
+                    <Link to={`/posts/edit/${post?.id}`} className="post__edit">수정</Link>
                   </div>
-                </Link>
+                )}
+                
               </div>
-            ))}
+            )) : 
+              <div className="post__no-post">
+                게시글이 없습니다.
+              </div>}
           </div>
     </>
   );

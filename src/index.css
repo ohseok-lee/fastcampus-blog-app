@@ -101,7 +101,6 @@ footer a:hover {
 
 .post__box {
   padding: 24px 0px;
-  border-top: 1px solid #f2f2f2;
 }
 
 .post__profile-box {
@@ -198,6 +197,18 @@ footer a:hover {
   padding: 20px 0px;
 }
 
+.post__text--pre-wrap {
+  white-space: pre-wrap;
+}
+
+.post__no-post{
+  padding: 24px;
+  text-align: center;
+  color: gray;
+  border: 1px solid #f2f2f2;
+  border-left-width: 0px;
+  border-right-width: 0px;
+}
 /* profile box */
 
 .profile__box {

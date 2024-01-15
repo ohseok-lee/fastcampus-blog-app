@@ -1,27 +1,55 @@
-import { Link } from "react-router-dom";
+import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
+import { db } from "firebaseApp";
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { PostProps } from "./PostList";
+import Loader from "./Loader";
+
 
 export default function PostDetail(){
+  const [post, setPost] = useState<PostProps | null>(null);
+  const params = useParams();
+
+  const getPost = async (id: string) => {
+    if(id){
+      const docRef = doc(db, "posts", id);
+      const docSnap = await getDoc(docRef);
+      setPost({id: docSnap?.id, ...docSnap.data() as PostProps});
+    }
+  };
+
+  const handleDelete = () => {};
+
+  useEffect(() => {
+    if(params?.id){
+      getPost(params?.id);
+    }
+  }, [params?.id]);
+
   return (
     <div className="post__detail">
-      <div className="post__box">
-        <div className="post__title">
-          제목입니다.
-        </div>
-        <div className="post__profile-box">
-          <div className="post__profile" />
-          <div className="post__author-name">패스트캠퍼스</div>
-          <div className="post__date">2023.12.29 금요일</div>
-        </div>
-        <div className="post__utils-box">
-          <div className="post__delete">삭제</div>
-          <div className="post__edit">
-            <Link to={`/posts/edit/1`}>수정</Link>
+      {
+        post ? (
+          <div className="post__box">
+            <div className="post__title">{post?.title}</div>
+            <div className="post__profile-box">
+              <div className="post__profile" />
+              <div className="post__author-name">{post?.email}</div>
+              <div className="post__date">{post?.createdAt}</div>
+            </div>
+            <div className="post__utils-box">
+              <div 
+                className="post__delete"
+                role="presentation"
+                onClick={handleDelete}>삭제</div>
+              <div className="post__edit">
+                <Link to={`/posts/edit/1`}>수정</Link>
+              </div>
+            </div>
+            <div className="post__text post__text--pre-wrap">{post?.content}</div>
           </div>
-        </div>
-        <div className="post__text">
-          국비지원/기업 강의는 별도로 안내된 학습 사이트를 이용해 주세요. 쉐어엑스 강의는 해당 홈페이지를 이용해 주세요. 온라인 강의는 오픈일 오후 5시 이후 수강이 가능하며, 당사 사정에 따라 오픈 시간이 조금 늦어질 수 있습니다.
-        </div>
-      </div>
+        ) : (<Loader />)
+      }
     
     </div>
   );

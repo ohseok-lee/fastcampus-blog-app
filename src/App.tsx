@@ -17,7 +17,6 @@ function App() {
   // auth에 currentUserrk 있다면 isAuth true
   const [isAuth, setIsAuth] = useState<boolean>(!!auth?.currentUser);
 
-  //study useEffect
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {

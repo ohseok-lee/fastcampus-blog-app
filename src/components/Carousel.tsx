@@ -10,38 +10,38 @@ export default function Carousel(){
   const [activeImage, setActiveImage] = useState(1);
 
   return(
-    <div>
+    <>
       <div className="carousel">
         <ul className="carousel__slides">
           {IMAGE_LIST.map((image, index, images) => {
             return (
-              <>
+              <div key={image}>
                 <input type="radio" name="radio-buttons" id={`img-${index + 1}`} checked={activeImage === index} readOnly />
                 <li className="carousel__slide-container">
                   <div className="carousel__slide-img">
                     <img alt="scenery 1" src={image} />
                   </div>
                   <div className="carousel__controls">
-                    <label onClick={() => setActiveImage(getPrevIndex(images.length, index))} className="carousel__slide-prev">
+                    <label onClick={() => setActiveImage(getPrevIndex(images.length, index))} className="carousel__slide-prev" key={'prev'+index}>
                       <span>&lsaquo;</span>
                     </label>
-                    <label onClick={() => setActiveImage(getNextIndex(images.length, index))} className="carousel__slide-next">
+                    <label onClick={() => setActiveImage(getNextIndex(images.length, index))} className="carousel__slide-next" key={'next'+index}>
                       <span>&rsaquo;</span>
                     </label>
                   </div>
                 </li>
-              </>
+              </div>
             )
           })}
 
           <div className="carousel__dots">
             {IMAGE_LIST.map((image, index) => (
-              <label onClick={() => setActiveImage(index)} className="carousel__dot" id={`img-dot-${index + 1}`}></label>
+              <label onClick={() => setActiveImage(index)} className="carousel__dot" id={`img-dot-${index + 1}`} key={`img-dot-${index + 1}`}></label>
             ))}
           </div>
         </ul>
       </div>
-    </div>
+    </>
   );
 }
 
