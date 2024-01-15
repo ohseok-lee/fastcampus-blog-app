@@ -1,8 +1,9 @@
 import { useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { collection, getDocs } from "firebase/firestore"
+import { Link, useNavigate } from "react-router-dom";
+import { collection, deleteDoc, doc, getDocs } from "firebase/firestore"
 import { db } from "firebaseApp";
 import AuthContext from "context/AuthContext";
+import { toast } from "react-toastify";
 
 interface PostListPage{
   hasNavigation?: boolean;
@@ -16,6 +17,8 @@ export interface PostProps{
   summary: string;
   content: string;
   createdAt: string;
+  updatedAt?: string;
+  uid: string;
 }
 
 type TabType = "all" | "my";
@@ -24,14 +27,26 @@ export default function PostList({hasNavigation = true}){
   const [activeTab, setActiveTab] = useState<TabType>("all");
   const [posts, setPosts] = useState<PostProps[]>([]);
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const getPosts = async () => {
     const postData = await getDocs(collection(db, "posts"));
+    setPosts([]);
     postData?.forEach((doc) => {
       const postDataObj = { ...doc.data(), id: doc.id};
       setPosts((prev) => [...prev, postDataObj as PostProps]);
     })
   }
+
+  const handleDelete = async (id: string) => {
+    const confirm = window.confirm("게시글을 삭제하시겠습니까?");
+    if(confirm && id){
+      await deleteDoc(doc(db, "posts", id));
+
+      toast.success("게시글을 삭제했습니다.");
+      getPosts(); //변경된 포스트 다시 불러오기
+    }
+  };
 
   //study useEffect
   //React에서 Component가 렌더링될 때마다 특정 함수를 실행하도록 하는 hook
@@ -71,7 +86,10 @@ export default function PostList({hasNavigation = true}){
                 </Link>
                 {post?.email === user?.email && (
                   <div className="post__utils-box">
-                    <div className="post__delete">삭제</div>
+                    <div 
+                      className="post__delete"
+                      role="presentation"
+                      onClick={()=>{handleDelete(post?.id as string)}}>삭제</div>
                     <Link to={`/posts/edit/${post?.id}`} className="post__edit">수정</Link>
                   </div>
                 )}
