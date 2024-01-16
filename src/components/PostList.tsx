@@ -1,12 +1,13 @@
 import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { collection, deleteDoc, doc, getDocs } from "firebase/firestore"
+import { collection, deleteDoc, doc, getDocs, orderBy, query, where } from "firebase/firestore"
 import { db } from "firebaseApp";
 import AuthContext from "context/AuthContext";
 import { toast } from "react-toastify";
 
-interface PostListPage{
+interface PostListProps{
   hasNavigation?: boolean;
+  defaultTab?: TabType;
 }
 
 //study typescript 선택컬럼 지정
@@ -16,22 +17,29 @@ export interface PostProps{
   email: string;
   summary: string;
   content: string;
-  createdAt: string;
+  createAt: string;
   updatedAt?: string;
   uid: string;
 }
 
 type TabType = "all" | "my";
 
-export default function PostList({hasNavigation = true}){
-  const [activeTab, setActiveTab] = useState<TabType>("all");
+export default function PostList({hasNavigation = true, defaultTab = "all"}){
+  const [activeTab, setActiveTab] = useState<TabType>(defaultTab as TabType);
   const [posts, setPosts] = useState<PostProps[]>([]);
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const getPosts = async () => {
-    const postData = await getDocs(collection(db, "posts"));
     setPosts([]);
+    let postRef = collection(db, "posts");
+    let postQuery;
+    if(user && activeTab === "my"){
+      postQuery = query(postRef, where("uid", "==", user?.uid), orderBy("createAt", "desc")) ;
+    }else{
+      postQuery = query(postRef, orderBy("createAt", "desc"));
+    }
+    const postData = await getDocs(postQuery);
     postData?.forEach((doc) => {
       const postDataObj = { ...doc.data(), id: doc.id};
       setPosts((prev) => [...prev, postDataObj as PostProps]);
@@ -52,7 +60,7 @@ export default function PostList({hasNavigation = true}){
   //React에서 Component가 렌더링될 때마다 특정 함수를 실행하도록 하는 hook
   useEffect(() => {
     getPosts();
-  }, []);
+  }, [activeTab]);
 
   return(
     <>
@@ -79,7 +87,7 @@ export default function PostList({hasNavigation = true}){
                   <div className="post__profile-box">
                     <div className="post__profile" />
                     <div className="post__author-name">{post?.email}</div>
-                    <div className="post__date">{post?.createdAt}</div>
+                    <div className="post__date">{post?.createAt}</div>
                   </div>
                   <div className="post__title">{post?.title}</div>
                   <div className="post__text">{post?.summary}</div>

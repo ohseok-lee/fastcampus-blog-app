@@ -66,6 +66,12 @@ footer a:hover {
   color: black;
 }
 
+.footer__theme-btn {
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+}
+
 /* post page */
 
 .post__nav {
@@ -249,6 +255,7 @@ footer a:hover {
   color: gray;
   font-size: 14px;
   text-decoration: underline;
+  cursor: pointer;
 }
 
 .profile__logout:hover,
@@ -484,4 +491,46 @@ input:checked + .carousel__slide-container .nav label {
   border-radius: 50%;
   z-index: 9999;
   animation: rotation 1s linear infinite;
+}
+
+/* dark mode */
+.light {
+  transition: all 0.25s linear;
+  background-color: white;
+}
+
+.dark {
+  transition: all 0.25s linear;
+  background-color: #222222;
+  min-height: 100vh;
+}
+
+.dark footer,
+.dark header {
+  background-color: #555555;
+}
+
+.dark a,
+.dark .post__nav--active,
+.dark .form label,
+.dark .post__delete,
+.dark .profile__logout,
+.dark .profile__email,
+.dark .profile__name,
+.dark .form__title,
+.dark .post__title,
+.dark .post__author-name,
+.dark .post__date,
+.dark .post__text {
+  color: white;
+}
+
+.dark a:hover,
+.dark a:focus,
+.dark .post__nav {
+  color: lightgray;
+}
+
+.dark .form__error {
+  color: #ff6a71;
 }
