@@ -4,10 +4,12 @@ import { db, app } from "firebaseApp";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { PostProps } from "./PostList";
+import { CATEGORIES, CategoryType, PostProps } from "./PostList";
+
 
 export default function PostForm() {
   const [title, setTitle] = useState<string>("");
+  const [category, setCategory] = useState<CategoryType>("Frontend");
   const [summary, setSummary] = useState<string>("");
   const [content, setContent] = useState<string>("");
   const [post, setPost] = useState<PostProps | null>(null);
@@ -26,6 +28,7 @@ export default function PostForm() {
       setTitle(post?.title);
       setSummary(post?.summary);
       setContent(post?.content);
+      setCategory(post?.category as CategoryType);
     }
   }, [post]);
 
@@ -45,6 +48,7 @@ export default function PostForm() {
         const postRef = doc(db, "posts", post?.id);
         await updateDoc(postRef, {
           title: title,
+          category: category,
           summary: summary,
           content: content,
           updatedAt: new Date()?.toLocaleDateString("ko",{
@@ -63,6 +67,7 @@ export default function PostForm() {
       try{
         await addDoc(collection(db, "posts"), {
           title: title,
+          category: category,
           summary: summary,
           content: content,
           createAt: new Date()?.toLocaleDateString("ko",{
@@ -83,11 +88,14 @@ export default function PostForm() {
     }
   }
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> ) => {
+  const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement> ) => {
     const {target: {name, value}} = e;
 
     if(name === "title"){
       setTitle(value);
+    }
+    if(name === "category"){
+      setCategory(value as CategoryType);
     }
     if(name === "summary"){
       setSummary(value);
@@ -102,6 +110,15 @@ export default function PostForm() {
       <div className="form__block">
         <label htmlFor="title">제목</label>
         <input type="text" name="title" id="title" onChange={onChange} value={title} required />
+      </div>
+      <div className="form__block">
+        <label htmlFor="category">카테고리</label>
+        <select name="category" id="category" onChange={onChange} value={category} required>
+          <option value="">카테고리를 선택해주세요</option>
+            {CATEGORIES?.map((cat)=>(
+              <option value={cat} key={cat}>{cat}</option>
+            ))}
+        </select>
       </div>
       <div className="form__block">
         <label htmlFor="summary">요약</label>

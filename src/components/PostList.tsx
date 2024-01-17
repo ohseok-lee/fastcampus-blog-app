@@ -7,8 +7,11 @@ import { toast } from "react-toastify";
 
 interface PostListProps{
   hasNavigation?: boolean;
-  defaultTab?: TabType;
+  defaultTab?: TabType | CategoryType;
 }
+
+export type CategoryType = "Frontend" | "Backend" | "Web" | "Natvie";
+export const CATEGORIES: CategoryType[] = ["Frontend", "Backend", "Web", "Natvie"];
 
 //study typescript 선택컬럼 지정
 export interface PostProps{
@@ -20,12 +23,13 @@ export interface PostProps{
   createAt: string;
   updatedAt?: string;
   uid: string;
+  category: CategoryType;
 }
 
 type TabType = "all" | "my";
 
 export default function PostList({hasNavigation = true, defaultTab = "all"}){
-  const [activeTab, setActiveTab] = useState<TabType>(defaultTab as TabType);
+  const [activeTab, setActiveTab] = useState<TabType | CategoryType>(defaultTab as TabType);
   const [posts, setPosts] = useState<PostProps[]>([]);
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -35,9 +39,11 @@ export default function PostList({hasNavigation = true, defaultTab = "all"}){
     let postRef = collection(db, "posts");
     let postQuery;
     if(user && activeTab === "my"){
-      postQuery = query(postRef, where("uid", "==", user?.uid), orderBy("createAt", "desc")) ;
+      postQuery = query(postRef, where("uid", "==", user?.uid), orderBy("updatedAt", "desc")) ;
+    }else if(user && activeTab === "all"){
+      postQuery = query(postRef, orderBy("updatedAt", "desc"));
     }else{
-      postQuery = query(postRef, orderBy("createAt", "desc"));
+      postQuery = query(postRef, where("category", "==", activeTab), orderBy("updatedAt", "desc"))
     }
     const postData = await getDocs(postQuery);
     postData?.forEach((doc) => {
@@ -78,6 +84,15 @@ export default function PostList({hasNavigation = true, defaultTab = "all"}){
             onClick={() => setActiveTab("my")}>
               나의 글
           </div>
+          {CATEGORIES.map((cat)=>(
+            <div 
+              key={cat}
+              role="presentation" 
+              className={activeTab === cat ? "post__nav--active" : ""} 
+              onClick={() => {setActiveTab(cat)}}>
+                {cat}
+            </div>
+          ))}
         </div>
       )}
       <div className="post__list">
@@ -92,7 +107,7 @@ export default function PostList({hasNavigation = true, defaultTab = "all"}){
                   <div className="post__title">{post?.title}</div>
                   <div className="post__text">{post?.summary}</div>
                 </Link>
-                {post?.email === user?.email && (
+                {post?.email === user?.email ? (
                   <div className="post__utils-box">
                     <div 
                       className="post__delete"
@@ -100,7 +115,7 @@ export default function PostList({hasNavigation = true, defaultTab = "all"}){
                       onClick={()=>{handleDelete(post?.id as string)}}>삭제</div>
                     <Link to={`/posts/edit/${post?.id}`} className="post__edit">수정</Link>
                   </div>
-                )}
+                ) : (<div className="post__utils-box"></div>)}
                 
               </div>
             )) : 

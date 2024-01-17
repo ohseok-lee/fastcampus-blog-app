@@ -140,6 +140,7 @@ footer a:hover {
 }
 
 .post__utils-box {
+  height: 15px;
   display: flex;
   gap: 8px;
   flex-direction: row-reverse;
@@ -186,6 +187,16 @@ footer a:hover {
 .post__detail .post__title {
   font-size: 36px;
   line-height: 40px;
+}
+
+.post__detail .post__category {
+  color: black;
+  border: 1px solid lightgrey;
+  border-radius: 10px;
+  padding: 0px 8px;
+  font-size: 12px;
+  background-color: #f2f2f2;
+
 }
 
 .post__detail .post__utils-box {
@@ -411,6 +422,16 @@ input:checked + .carousel__slide-container .nav label {
   max-width: 680px;
 }
 
+.form select {
+  height: 40px;
+  padding: 10px 10px;
+  font-size: 16px;
+  border-radius: 0.3rem;
+  border:  1px solid lightgray;
+  width: 99%;
+  max-width: 680px;
+}
+
 .form textarea {
   min-height: 400px;
   padding: 10px 10px;
@@ -521,7 +542,8 @@ input:checked + .carousel__slide-container .nav label {
 .dark .post__title,
 .dark .post__author-name,
 .dark .post__date,
-.dark .post__text {
+.dark .post__text,
+.dark .form__block {
   color: white;
 }
 
