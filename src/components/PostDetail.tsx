@@ -5,6 +5,7 @@ import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import { PostProps } from "./PostList";
 import Loader from "./Loader";
 import { toast } from "react-toastify";
+import Comment from "./Comment";
 
 
 export default function PostDetail(){
@@ -40,6 +41,7 @@ export default function PostDetail(){
     <div className="post__detail">
       {
         post ? (
+          <>
           <div className="post__box">
             <div className="post__title">{post?.title}</div>
             <div className="post__profile-box">
@@ -58,7 +60,9 @@ export default function PostDetail(){
               </div>
             </div>
             <div className="post__text post__text--pre-wrap">{post?.content}</div>
+            <Comment post={post} getPost={getPost}/>
           </div>
+          </>
         ) : (<Loader />)
       }
     
