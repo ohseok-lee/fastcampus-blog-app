@@ -4,7 +4,7 @@ import { db, app } from "firebaseApp";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { CATEGORIES, CategoryType, PostProps } from "./PostList";
+import { CATEGORIES, CategoryType, PostInterface } from "./PostList";
 
 
 export default function PostForm() {
@@ -12,19 +12,19 @@ export default function PostForm() {
   const [category, setCategory] = useState<CategoryType>("Frontend");
   const [summary, setSummary] = useState<string>("");
   const [content, setContent] = useState<string>("");
-  const [post, setPost] = useState<PostProps | null>(null);
-  const {user} = useContext(AuthContext);
+  const [post, setPost] = useState<PostInterface | null>(null);
+  const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const params = useParams();
 
   useEffect(() => {
-    if(params?.id){
+    if (params?.id) {
       getPost(params?.id);
     }
   }, [params?.id]);
 
   useEffect(() => {
-    if(post){
+    if (post) {
       setTitle(post?.title);
       setSummary(post?.summary);
       setContent(post?.content);
@@ -33,79 +33,79 @@ export default function PostForm() {
   }, [post]);
 
   const getPost = async (id: string) => {
-    if(id){
+    if (id) {
       const docRef = doc(db, "posts", id);
       const docSnap = await getDoc(docRef);
-      setPost({id: docSnap?.id, ...docSnap.data() as PostProps});
+      setPost({ id: docSnap?.id, ...docSnap.data() as PostInterface });
     }
   };
-  
+
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if(post && post?.id){
-      try{
+    if (post && post?.id) {
+      try {
         const postRef = doc(db, "posts", post?.id);
         await updateDoc(postRef, {
           title: title,
           category: category,
           summary: summary,
           content: content,
-          updatedAt: new Date()?.toLocaleDateString("ko",{
+          updatedAt: new Date()?.toLocaleDateString("ko", {
             hour: "2-digit",
-            minute:"2-digit",
-            second:"2-digit",
+            minute: "2-digit",
+            second: "2-digit",
           }),
         });
 
         toast.success("게시글을 수정했습니다.");
         navigate("/");
-      }catch(error: any){
+      } catch (error: any) {
         toast.error(error?.code);
       }
-    }else{
-      try{
+    } else {
+      try {
         await addDoc(collection(db, "posts"), {
           title: title,
           category: category,
           summary: summary,
           content: content,
-          createAt: new Date()?.toLocaleDateString("ko",{
+          createAt: new Date()?.toLocaleDateString("ko", {
             hour: "2-digit",
-            minute:"2-digit",
-            second:"2-digit",
+            minute: "2-digit",
+            second: "2-digit",
           }),
           email: user?.email,
           uid: user?.uid,
         });
-        
+
         toast.success("게시글을 생성했습니다.");
         navigate("/");
-      }catch(error: any){
+      } catch (error: any) {
         console.log(error);
         toast.error(error?.code);
       }
     }
   }
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement> ) => {
-    const {target: {name, value}} = e;
-
-    if(name === "title"){
+  const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { target: { name, value } } = e;
+    
+    if (name === "title") {
       setTitle(value);
     }
-    if(name === "category"){
+    if (name === "category") {
       setCategory(value as CategoryType);
     }
-    if(name === "summary"){
+    if (name === "summary") {
       setSummary(value);
     }
-    if(name === "content"){
+    if (name === "content") {
       setContent(value);
     }
   };
 
-  return(
+  return (
     <form onSubmit={onSubmit} className="form">
       <div className="form__block">
         <label htmlFor="title">제목</label>
@@ -115,9 +115,9 @@ export default function PostForm() {
         <label htmlFor="category">카테고리</label>
         <select name="category" id="category" onChange={onChange} value={category} required>
           <option value="">카테고리를 선택해주세요</option>
-            {CATEGORIES?.map((cat)=>(
-              <option value={cat} key={cat}>{cat}</option>
-            ))}
+          {CATEGORIES?.map((cat) => (
+            <option value={cat} key={cat}>{cat}</option>
+          ))}
         </select>
       </div>
       <div className="form__block">

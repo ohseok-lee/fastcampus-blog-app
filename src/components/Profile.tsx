@@ -9,11 +9,11 @@ export default function Profile() {
   const { user } = useContext(AuthContext);
 
   const onSignOut = async () => {
-    try{
+    try {
       const auth = getAuth(app);
       await signOut(auth);
       toast.success("로그아웃 되었습니다.");
-    }catch(error: any){
+    } catch (error: any) {
       toast.error(error?.code);
     }
   };
@@ -27,8 +27,8 @@ export default function Profile() {
           <div className="profile__name">{user?.displayName || '사용자'}</div>
         </div>
       </div>
-      <div 
-        role="presentation" 
+      <div
+        role="presentation"
         className="profile__logout"
         onClick={onSignOut}>로그아웃</div>
     </div>

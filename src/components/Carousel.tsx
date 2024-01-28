@@ -6,10 +6,10 @@ const IMAGE_3_URL = "https://images.unsplash.com/photo-1667971286579-63a5222780f
 
 const IMAGE_LIST = [IMAGE_1_URL, IMAGE_2_URL, IMAGE_3_URL]
 
-export default function Carousel(){
+export default function Carousel() {
   const [activeImage, setActiveImage] = useState(1);
 
-  return(
+  return (
     <>
       <div className="carousel">
         <ul className="carousel__slides">
@@ -22,10 +22,10 @@ export default function Carousel(){
                     <img alt="scenery 1" src={image} />
                   </div>
                   <div className="carousel__controls">
-                    <label onClick={() => setActiveImage(getPrevIndex(images.length, index))} className="carousel__slide-prev" key={'prev'+index}>
+                    <label onClick={() => setActiveImage(getPrevIndex(images.length, index))} className="carousel__slide-prev" key={'prev' + index}>
                       <span>&lsaquo;</span>
                     </label>
-                    <label onClick={() => setActiveImage(getNextIndex(images.length, index))} className="carousel__slide-next" key={'next'+index}>
+                    <label onClick={() => setActiveImage(getNextIndex(images.length, index))} className="carousel__slide-next" key={'next' + index}>
                       <span>&rsaquo;</span>
                     </label>
                   </div>

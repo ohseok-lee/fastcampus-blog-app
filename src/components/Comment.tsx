@@ -3,11 +3,11 @@ import { arrayRemove, arrayUnion, doc, updateDoc } from "firebase/firestore";
 import { db } from "firebaseApp";
 import { useContext, useEffect, useState } from "react"
 import { useParams } from "react-router-dom";
-import { CommentInterface, PostProps } from "./PostList";
+import { CommentInterface, PostInterface } from "./PostList";
 import { toast } from "react-toastify";
 
 interface CommentProps{
-  post: PostProps;
+  post: PostInterface;
   getPost: (id: string) => void;
 }
 

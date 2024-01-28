@@ -2,14 +2,14 @@ import { collection, deleteDoc, doc, getDoc, getDocs, query, where } from "fireb
 import { db } from "firebaseApp";
 import { useEffect, useState } from "react";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
-import { PostProps } from "./PostList";
+import { PostInterface } from "./PostList";
 import Loader from "./Loader";
 import { toast } from "react-toastify";
 import Comment from "./Comment";
 
 
 export default function PostDetail(){
-  const [post, setPost] = useState<PostProps | null>(null);
+  const [post, setPost] = useState<PostInterface | null>(null);
   const params = useParams();
   const navigate = useNavigate();
 
@@ -17,7 +17,7 @@ export default function PostDetail(){
     if(id){
       const docRef = doc(db, "posts", id);
       const docSnap = await getDoc(docRef);
-      setPost({id: docSnap?.id, ...docSnap.data() as PostProps});
+      setPost({id: docSnap?.id, ...docSnap.data() as PostInterface});
     }
   };
 

@@ -9,7 +9,6 @@ import SignupPage from "../pages/signup";
 import PostsPage from "../pages/home/posts";
 import { useState } from "react";
 
-//study ts type 부여방법 스터디
 interface RouterProps {
     isAuth: boolean;
 }

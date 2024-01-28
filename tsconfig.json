@@ -24,7 +24,7 @@
   "include": [
     "src"
   ],
-  //study import 원리 공부 필요
+
   "paths": {
     "pages/*": ["pages/*"],
     "components/*": ["components/*"],

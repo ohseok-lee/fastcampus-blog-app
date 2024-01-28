@@ -18,12 +18,11 @@ export default function SingupForm() {
       await createUserWithEmailAndPassword(auth, email, pwd);
       toast.success("성공적으로 회원가입 되었습니다.");
       navigate("/");
-    } catch (error:any) {
+    } catch (error: any) {
       toast.error("회원가입에 실패했습니다. " + error?.code);
     }
   }
 
-  //study js 구조분해 할당 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const {
       target: {

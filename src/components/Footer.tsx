@@ -6,7 +6,7 @@ import { useContext } from "react";
 export default function Footer() {
   const context = useContext(ThemeContext);
   console.log(context);
-  return(
+  return (
     <footer>
       <Link to="/posts/new">글쓰기</Link>
       <Link to="/posts">게시글</Link>
@@ -14,12 +14,12 @@ export default function Footer() {
       <div className="footer__theme">
         {
           context.theme === "light" ? (
-            <BsSun onClick={context.toggleMode} className="footer__theme-btn"/> 
-          ) : ( 
-            <BsMoonFill onClick={context.toggleMode} className="footer__theme-btn"/>
+            <BsSun onClick={context.toggleMode} className="footer__theme-btn" />
+          ) : (
+            <BsMoonFill onClick={context.toggleMode} className="footer__theme-btn" />
           )
         }
       </div>
-    </footer> 
+    </footer>
   );
 }

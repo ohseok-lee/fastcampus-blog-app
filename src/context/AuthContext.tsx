@@ -6,12 +6,10 @@ interface AuthProps{
   children: ReactNode;
 }
 
-//study typescript type지정 
 const AuthContext = createContext({
   user: null as User | null,
 });
 
-//study context사용법
 export const AuthcontextProvider = ({children}: AuthProps) => {
   const auth = getAuth(app);
   const [currentUser, setCurrentUser] = useState<User | null>(null);

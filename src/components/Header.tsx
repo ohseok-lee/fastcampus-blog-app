@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 
 export default function Header() {
-  return(
+  return (
     <header className="header">
       <Link className="header__logo" to="/">React Blog</Link>
       <div>
@@ -10,6 +10,6 @@ export default function Header() {
         <Link to="/profiles">프로필</Link>
       </div>
     </header>
-    
+
   );
 }
